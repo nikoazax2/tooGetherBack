@@ -4,16 +4,17 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.enableCors();
+  app.setGlobalPrefix('api');
   const config = new DocumentBuilder()
-    .setTitle('Cats example')
-    .setDescription('The cats API description')
+    .setTitle('Toogether')
+    .setDescription('Toogether API')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
-
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('doc', app, document);
-  app.enableCors();
+
   await app.listen(3000);
 }
 bootstrap();
