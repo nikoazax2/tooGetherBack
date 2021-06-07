@@ -89,19 +89,6 @@ export class ActivitiesService {
     return true;
   }
 
-  async doesUserCanSee(id: number, user: User) {
-    let activity = await this.activities.findOne({
-      relations: ['participants'],
-      where: { id: id },
-    });
-
-    if (!activity) {
-      throw new NotFoundException('Activity not found');
-    }
-
-    return activity.participants.filter((u) => u.id === user.id).length !== 0;
-  }
-
   async update(id: number, updateActivitytDto: UpdateActivityDto) {
     await this.activities.update(id, updateActivitytDto);
   }

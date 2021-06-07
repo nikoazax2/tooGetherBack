@@ -15,13 +15,13 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UsersService } from './users.service';
 
 @Controller('users')
-@ApiTags('users')
 export class UsersController {
   constructor(
     private usersService: UsersService,
     private activitiesService: ActivitiesService,
   ) {}
 
+  @ApiTags('users')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('profile')
@@ -29,6 +29,7 @@ export class UsersController {
     return { user: req.user };
   }
 
+  @ApiTags('users')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('activities')
@@ -36,6 +37,7 @@ export class UsersController {
     return this.activitiesService.findFromUser(req.user.id);
   }
 
+  @ApiTags('users')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('activities/:id')
@@ -43,6 +45,7 @@ export class UsersController {
     return this.activitiesService.addUser(+id, req.user.id);
   }
 
+  @ApiTags('users')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete('activities/:id')
@@ -50,6 +53,7 @@ export class UsersController {
     return this.activitiesService.removeUser(+id, req.user.id);
   }
 
+  @ApiTags('admin')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Roles(RoleEnum.Admin)
@@ -58,6 +62,7 @@ export class UsersController {
     return (await this.usersService.getById(id)).getJSON();
   }
 
+  @ApiTags('admin')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Roles(RoleEnum.Admin)

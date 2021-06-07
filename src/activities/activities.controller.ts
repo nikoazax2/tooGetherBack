@@ -15,17 +15,16 @@ import { RoleEnum } from '../roles/role.enum';
 import { Roles } from '../roles/roles.decorator';
 import { RolesGuard } from '../roles/roles.guard';
 import { ActivitiesService } from './activities.service';
-import { ActivityGuard } from './activity.guard';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Controller('activities')
-@ApiTags('activities')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class ActivitiesController {
   constructor(private readonly activitiesService: ActivitiesService) {}
 
+  @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
   @Post()
@@ -33,6 +32,7 @@ export class ActivitiesController {
     return this.activitiesService.create(createActivityDto);
   }
 
+  @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
   @Get()
@@ -40,6 +40,7 @@ export class ActivitiesController {
     return this.activitiesService.findAll();
   }
 
+  @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
   @Get('user/:userId')
@@ -47,18 +48,19 @@ export class ActivitiesController {
     return this.activitiesService.findFromUser(+id);
   }
 
-  @UseGuards(ActivityGuard)
+  @ApiTags('activities')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.activitiesService.findOne(+id);
   }
 
-  @UseGuards(ActivityGuard)
+  @ApiTags('activities')
   @Get(':id/detail')
   findOneWithDetail(@Param('id') id: string) {
     return this.activitiesService.findWithparticipants(+id);
   }
 
+  @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
   @Put(':id/user/:userId')
@@ -66,6 +68,7 @@ export class ActivitiesController {
     return this.activitiesService.addUser(+id, +userId);
   }
 
+  @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
   @Delete(':id/user/:userId')
@@ -73,6 +76,7 @@ export class ActivitiesController {
     return this.activitiesService.removeUser(+id, +userId);
   }
 
+  @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
   @Patch(':id')
@@ -83,6 +87,7 @@ export class ActivitiesController {
     return this.activitiesService.update(+id, updateActivityDto);
   }
 
+  @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
   @Delete(':id')
