@@ -1,4 +1,12 @@
-import { Controller, UseGuards, Request, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  UseGuards,
+  Request,
+  Get,
+  Param,
+  Post,
+  Delete,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ActivitiesService } from 'src/activities/activities.service';
 import { RoleEnum } from 'src/roles/role.enum';
@@ -26,6 +34,20 @@ export class UsersController {
   @Get('activities')
   activities(@Request() req) {
     return this.activitiesService.findFromUser(req.user.id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('activities/:id')
+  addActivity(@Request() req, @Param('id') id: string) {
+    return this.activitiesService.addUser(+id, req.user.id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Delete('activities/:id')
+  removeActivity(@Request() req, @Param('id') id: string) {
+    return this.activitiesService.removeUser(+id, req.user.id);
   }
 
   @ApiBearerAuth()
