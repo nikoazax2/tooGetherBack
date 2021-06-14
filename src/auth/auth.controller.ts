@@ -11,19 +11,18 @@ export class AuthController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
-  ) { }
+  ) {}
 
   @Post('login')
-  async login (@Body() payload: UserLoginPayload) {
+  async login(@Body() payload: UserLoginPayload) {
     let user = await this.authService.validateUser(payload);
     return await this.authService.createToken(user);
   }
 
   @Post('register')
-  async register (@Body() payload: UserRegisterPayload) {
+  async register(@Body() payload: UserRegisterPayload) {
     let user = await this.usersService.register(payload);
 
-
-    return user.id
+    return await this.authService.createToken(user);
   }
 }

@@ -1,4 +1,8 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -14,29 +18,33 @@ export class UsersService {
     private users: Repository<User>,
     @InjectRepository(Role)
     private roles: Repository<Role>,
-  ) { }
+  ) {}
 
-  async getAll () {
-    return await this.users.find({ relations: ['roles'] })
+  async getAll() {
+    return await this.users.find({ relations: ['roles'] });
   }
 
-  async getByEmail (email: string): Promise<User | undefined> {
+  async getByEmail(email: string): Promise<User | undefined> {
     return this.users.findOne({
       where: { email: email },
       relations: ['roles'],
     });
   }
 
-  async getById (id: string): Promise<User | undefined> {
+  async getById(id: string): Promise<User | undefined> {
     return await this.users.findOne({
       where: { id: id },
       relations: ['roles'],
     });
   }
 
-  async register (payload: UserRegisterPayload) {
-    if (payload.email === "" || payload.firstName === "" || payload.lastName === "" || payload.password === "") {
-      throw new BadRequestException("Missing information");
+  async register(payload: UserRegisterPayload) {
+    if (
+      payload.email === '' ||
+      payload.surname === '' ||
+      payload.password === ''
+    ) {
+      throw new BadRequestException('Missing information');
     }
     let user = await this.getByEmail(payload.email);
     if (user) {

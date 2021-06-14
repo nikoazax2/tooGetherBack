@@ -5,10 +5,7 @@ export class UserRegisterPayload {
   email: string;
 
   @ApiProperty()
-  firstName: string;
-
-  @ApiProperty()
-  lastName: string;
+  surname: string;
 
   @ApiProperty()
   password: string;

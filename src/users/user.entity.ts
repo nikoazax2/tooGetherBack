@@ -10,10 +10,7 @@ export class User extends CustomBaseEntity {
   email: string;
 
   @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
+  surname: string;
 
   @Column()
   readonly password: string;
