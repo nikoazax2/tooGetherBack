@@ -9,4 +9,7 @@ export class UserRegisterPayload {
 
   @ApiProperty()
   password: string;
+
+  @ApiProperty()
+  avatar: string;
 }

@@ -12,6 +12,9 @@ export class User extends CustomBaseEntity {
   @Column()
   surname: string;
 
+  @Column({ length: 1000 })
+  avatar: string;
+
   @Column()
   readonly password: string;
 

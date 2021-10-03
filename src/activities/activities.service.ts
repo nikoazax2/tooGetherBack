@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
@@ -10,6 +10,7 @@ import { Activity } from './entities/activity.entity';
 export class ActivitiesService {
   constructor(
     @InjectRepository(Activity) private activities: Repository<Activity>,
+    @InjectRepository(Activity) private creator: Repository<Activity>,
     @InjectRepository(User) private users: Repository<User>,
   ) {}
 
@@ -21,37 +22,54 @@ export class ActivitiesService {
     return await this.activities.find();
   }
 
-  async findWithparticipants(id: number) {
-    return await this.activities.findOne({
-      relations: ['participants'],
-      where: { id: id },
+  async getAllWParams(name: string, lieux: string) {
+    if (name != 'null') {
+      return await this.activities.find({
+        where: {
+          name: Like('%' + name + '%'),
+        },
+      });
+    }
+    if (lieux != 'null') {
+      return await this.activities.find({
+        where: {
+          lieux: Like('%' + lieux + '%'),
+        },
+      });
+    }
+    if (name != 'null' && lieux != 'null') {
+      return await this.activities.find({
+        where: {
+          lieux: Like('%' + lieux + '%'),
+          name: Like('%' + name + '%'),
+        },
+      });
+    }
+    if (name == 'null' && lieux == 'null') {
+      return await this.activities.find();
+    }
+  }
+
+  async findFromCreator(userId: string) {
+    return await this.activities.find({
+      select: ['id', 'name', 'date', 'description'],
+      where: { creatorId: userId },
     });
   }
 
   async findOne(id: number) {
     return await this.activities.findOne({
+      select: ['id', 'name', 'date', 'description'],
+      relations: ['participants'],
       where: { id: id },
     });
   }
 
   async findFromUser(userId: number) {
-    let activities = await this.activities.find({
-      relations: ['participants'], // participants = users
+    return await this.activities.find({
+      select: ['id', 'name', 'date', 'description'],
+      where: { creatorId: userId },
     });
-
-    let valids = [];
-
-    for (const activity of activities) {
-      for (const user of activity.participants) {
-        if (userId === user.id) {
-          let { participants, ...activity2 } = activity;
-          valids.push(activity2);
-          continue;
-        }
-      }
-    }
-
-    return valids;
   }
 
   async addUser(id: number, userId: number) {

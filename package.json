@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "nest start --watch",
+    "dev": "npm run start dev",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "seed": "node dist/seed",
@@ -16,6 +16,7 @@
     "start:prod": "node dist/main"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^1.6.0",
     "@nestjs/common": "^7.6.15",
     "@nestjs/config": "^0.6.3",
     "@nestjs/core": "^7.6.15",
@@ -26,13 +27,17 @@
     "@nestjs/typeorm": "^7.1.5",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
-    "mysql2": "^2.2.5",
+    "mysql2": "^2.3.0",
+    "nodemailer": "^6.6.3",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "pug": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6",
+    "sequelize": "^6.6.5",
+    "sequelize-typescript": "^2.1.0",
     "swagger-ui-express": "^4.1.6",
     "typeorm": "^0.2.33"
   },
@@ -47,6 +52,7 @@
     "@types/node": "^14.14.36",
     "@types/passport-jwt": "^3.0.5",
     "@types/passport-local": "^1.0.33",
+    "@types/sequelize": "^4.28.10",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.19.0",
     "@typescript-eslint/parser": "^4.19.0",

@@ -67,7 +67,18 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Roles(RoleEnum.Admin)
   @Get('list')
-  async list() {
-    return (await this.usersService.getAll()).map((user) => user.getJSON());
+  async list(@Param('email') email: string) {
+    return (await this.usersService.getAll(email)).map((user) =>
+      user.getJSON(),
+    );
+  }
+
+  @ApiTags('users')
+  @ApiBearerAuth()
+  @Get('testmailexist')
+  async textmailexist(@Param('mail') mail: string) {
+    return (await this.usersService.testmail(mail)).map((user) =>
+      user.getJSON(),
+    );
   }
 }

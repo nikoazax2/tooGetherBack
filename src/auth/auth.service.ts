@@ -14,9 +14,9 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
-  async validateUser (payload: UserLoginPayload): Promise<any> {
+  async validateUser(payload: UserLoginPayload): Promise<any> {
     const user = await this.usersService.getByEmail(payload.email);
 
     if (!user) {
@@ -29,7 +29,9 @@ export class AuthService {
     throw new UnauthorizedException('Invalid credentials!');
   }
 
-  async createToken (user: User) {
-    return { payload: { access_token: this.jwtService.sign({ id: user.id }, { expiresIn: "4h" }) }, user }
+  async createToken(user: User) {
+    return {
+      access_token: this.jwtService.sign({ id: user.id }, { expiresIn: '4h' }),
+    };
   }
 }

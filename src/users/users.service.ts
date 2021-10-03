@@ -20,13 +20,20 @@ export class UsersService {
     private roles: Repository<Role>,
   ) {}
 
-  async getAll() {
-    return await this.users.find({ relations: ['roles'] });
+  async getAll(email) {
+    return await this.users.find({ where: { email }, relations: ['roles'] });
   }
 
   async getByEmail(email: string): Promise<User | undefined> {
     return this.users.findOne({
       where: { email: email },
+      relations: ['roles'],
+    });
+  }
+
+  async testmail(email: string) {
+    return await this.users.find({
+      where: { email },
       relations: ['roles'],
     });
   }
@@ -42,7 +49,8 @@ export class UsersService {
     if (
       payload.email === '' ||
       payload.surname === '' ||
-      payload.password === ''
+      payload.password === '' ||
+      payload.avatar === ''
     ) {
       throw new BadRequestException('Missing information');
     }

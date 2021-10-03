@@ -19,33 +19,46 @@ import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 
 @Controller('activities')
-@ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 export class ActivitiesController {
   constructor(private readonly activitiesService: ActivitiesService) {}
 
-  @ApiTags('admin')
+  @ApiTags('activities')
   @UseGuards(RolesGuard)
-  @Roles(RoleEnum.Admin)
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   create(@Body() createActivityDto: CreateActivityDto) {
     return this.activitiesService.create(createActivityDto);
   }
 
-  @ApiTags('admin')
-  @UseGuards(RolesGuard)
-  @Roles(RoleEnum.Admin)
+  @ApiTags('activities')
   @Get()
   findAll() {
     return this.activitiesService.findAll();
   }
 
-  @ApiTags('admin')
+  @ApiTags('activities')
+  @Get('/:name/:lieux')
+  getAllWParams(@Param('name') name: string, @Param('lieux') lieux: string) {
+    return this.activitiesService.getAllWParams(name, lieux);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiTags('activities')
   @UseGuards(RolesGuard)
-  @Roles(RoleEnum.Admin)
+  @Get('creator/:userId')
+  findFromCreator(@Param('userId') id: string) {
+    return this.activitiesService.findFromCreator(id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiTags('activities')
+  @UseGuards(RolesGuard)
   @Get('user/:userId')
   findFromUser(@Param('userId') id: string) {
-    return this.activitiesService.findFromUser(+id);
+    return this.activitiesService.findFromCreator(id);
   }
 
   @ApiTags('activities')
@@ -54,20 +67,17 @@ export class ActivitiesController {
     return this.activitiesService.findOne(+id);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiTags('activities')
-  @Get(':id/detail')
-  findOneWithDetail(@Param('id') id: string) {
-    return this.activitiesService.findWithparticipants(+id);
-  }
-
-  @ApiTags('admin')
   @UseGuards(RolesGuard)
-  @Roles(RoleEnum.Admin)
   @Put(':id/user/:userId')
   addUser(@Param('id') id: string, @Param('userId') userId: string) {
     return this.activitiesService.addUser(+id, +userId);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
@@ -76,6 +86,8 @@ export class ActivitiesController {
     return this.activitiesService.removeUser(+id, +userId);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
@@ -87,6 +99,8 @@ export class ActivitiesController {
     return this.activitiesService.update(+id, updateActivityDto);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
