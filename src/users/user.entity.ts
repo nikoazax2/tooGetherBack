@@ -1,4 +1,5 @@
 import { Transform } from 'class-transformer';
+import { Activity } from 'src/activities/entities/activity.entity';
 import { Entity, Column, JoinTable, ManyToMany } from 'typeorm';
 import { CustomBaseEntity } from '../custom-base-entity';
 import { Role } from '../roles/role.entity';
@@ -6,6 +7,10 @@ import { RoleEnum } from '../roles/role.enum';
 
 @Entity()
 export class User extends CustomBaseEntity {
+  @ManyToMany(() => Activity)
+  @JoinTable()
+  activities: Activity[];
+
   @Column({ unique: true })
   email: string;
 

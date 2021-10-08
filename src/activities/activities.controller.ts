@@ -38,32 +38,26 @@ export class ActivitiesController {
   }
 
   @ApiTags('activities')
-  @Get('/:name/:lieux')
-  getAllWParams(@Param('name') name: string, @Param('lieux') lieux: string) {
-    return this.activitiesService.getAllWParams(name, lieux);
+  @Get('/:name/:lieux/:date/recherche')
+  getAllWParams(@Param('name') name: string, @Param('lieux') lieux: string, @Param('date') date: string) {
+    return this.activitiesService.getAllWParams(name, lieux,date);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @ApiTags('activities')
-  @UseGuards(RolesGuard)
-  @Get('creator/:userId')
-  findFromCreator(@Param('userId') id: string) {
-    return this.activitiesService.findFromCreator(id);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @ApiTags('activities')
-  @UseGuards(RolesGuard)
-  @Get('user/:userId')
-  findFromUser(@Param('userId') id: string) {
+  @Get('/:id/creator')
+  activityCreator(@Param('id') id: string) {
     return this.activitiesService.findFromCreator(id);
   }
 
   @ApiTags('activities')
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get('/:idParticipant/participant')
+  activityParticipant(@Param('idParticipant') idParticipant: string) {
+    return this.activitiesService.findFromPaticipant(+idParticipant);
+  }
+
+  @ApiTags('activities')
+  @Get('/:id/detail')
+  activityDetail(@Param('id') id: string) {
     return this.activitiesService.findOne(+id);
   }
 
@@ -76,21 +70,7 @@ export class ActivitiesController {
     return this.activitiesService.addUser(+id, +userId);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @ApiTags('admin')
-  @UseGuards(RolesGuard)
-  @Roles(RoleEnum.Admin)
-  @Delete(':id/user/:userId')
-  removeUser(@Param('id') id: string, @Param('userId') userId: string) {
-    return this.activitiesService.removeUser(+id, +userId);
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @ApiTags('admin')
-  @UseGuards(RolesGuard)
-  @Roles(RoleEnum.Admin)
+  @ApiTags('activities')
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -104,6 +84,12 @@ export class ActivitiesController {
   @ApiTags('admin')
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.Admin)
+  @Delete(':id/user/:userId')
+  removeUser(@Param('id') id: string, @Param('userId') userId: string) {
+    return this.activitiesService.removeUser(+id, +userId);
+  }
+
+  @ApiTags('activities')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.activitiesService.remove(+id);

@@ -3,7 +3,7 @@ import { User } from 'src/users/user.entity';
 
 export class CreateActivityDto {
   @ApiProperty()
-  creator: User;
+  creatorId: string;
 
   @ApiProperty()
   name: string;

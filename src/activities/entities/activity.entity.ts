@@ -14,11 +14,10 @@ import { CustomBaseEntity } from '../../custom-base-entity';
 export class Activity extends CustomBaseEntity {
   @ManyToMany(() => User)
   @JoinTable()
-  participants: User[];
+  users: User[];
 
-  @ManyToOne(() => User)
-  @JoinTable()
-  creator: User;
+  @Column()
+  creatorId: string;
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -28,6 +27,9 @@ export class Activity extends CustomBaseEntity {
 
   @Column()
   lieux: string;
+
+  @Column()
+  coordlieux: string;
 
   @Column()
   date: string;
