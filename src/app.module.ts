@@ -10,7 +10,6 @@ import { UsersModule } from './users/users.module';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { MailerModule } from '@nestjs-modules/mailer';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
