@@ -9,11 +9,17 @@ export class CreateActivityDto {
   name: string;
 
   @ApiProperty()
-  description: string;
-
-  @ApiProperty()
   lieux: string;
 
   @ApiProperty()
+  coordlieux: string;
+
+  @ApiProperty()
   date: string;
+
+  @ApiProperty()
+  description: string;
+
+  @ApiProperty()
+  emoji: string;
 }

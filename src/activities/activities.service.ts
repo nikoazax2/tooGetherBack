@@ -21,9 +21,25 @@ export class ActivitiesService {
     return await this.activities.find();
   }
 
+  async findMap() {
+    return await this.activities.find({
+      select: ['id', 'coordlieux'],
+      relations: ['users'],
+    });
+  }
+
   async findOne(id: number) {
     return await this.activities.findOne({
-      select: ['id', 'name', 'lieux', 'date', 'description'],
+      select: [
+        'id',
+        'name',
+        'lieux',
+        'date',
+        'description',
+        'coordlieux',
+        'creatorId',
+        'emoji',
+      ],
       relations: ['users'],
       where: { id: id },
     });
@@ -116,10 +132,19 @@ export class ActivitiesService {
   }
 
   async findFromUser(userId: number) {
-    return await this.activities.find({
-      select: ['id', 'name', 'date', 'description'],
-      where: { creatorId: userId },
+    const lesactivity = await this.activities.find({
+      relations: ['users'],
     });
+    var lesActivitesARenvoyer = [];
+    //return lesactivity;
+    lesactivity.forEach((activite) => {
+      activite.users.forEach((user) => {
+        if (user.id == userId) {
+          lesActivitesARenvoyer.push(activite);
+        }
+      });
+    });
+    return lesActivitesARenvoyer;
   }
 
   async addUser(id: number, userId: number) {

@@ -36,4 +36,7 @@ export class Activity extends CustomBaseEntity {
 
   @Column()
   description: string;
+
+  @Column()
+  emoji: string;
 }

@@ -39,8 +39,12 @@ export class ActivitiesController {
 
   @ApiTags('activities')
   @Get('/:name/:lieux/:date/recherche')
-  getAllWParams(@Param('name') name: string, @Param('lieux') lieux: string, @Param('date') date: string) {
-    return this.activitiesService.getAllWParams(name, lieux,date);
+  getAllWParams(
+    @Param('name') name: string,
+    @Param('lieux') lieux: string,
+    @Param('date') date: string,
+  ) {
+    return this.activitiesService.getAllWParams(name, lieux, date);
   }
 
   @ApiTags('activities')
@@ -56,9 +60,21 @@ export class ActivitiesController {
   }
 
   @ApiTags('activities')
+  @Get('/:idUser/activityOfUser')
+  findFromUser(@Param('idUser') idUser: string) {
+    return this.activitiesService.findFromUser(+idUser);
+  }
+
+  @ApiTags('activities')
   @Get('/:id/detail')
   activityDetail(@Param('id') id: string) {
     return this.activitiesService.findOne(+id);
+  }
+
+  @ApiTags('activities')
+  @Get('/map')
+  activityMap() {
+    return this.activitiesService.findMap();
   }
 
   @ApiBearerAuth()
