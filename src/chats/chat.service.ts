@@ -20,4 +20,8 @@ export class ChatsService {
       where: { activityId: id },
     });
   }
+
+  async create(createChatDto: CreateChatDto) {
+    return await this.chats.save(createChatDto);
+  }
 }

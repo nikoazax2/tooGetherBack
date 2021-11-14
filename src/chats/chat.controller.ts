@@ -26,4 +26,13 @@ export class ChatsController {
   activityCreator(@Param('id') id: string) {
     return this.chatsService.findOneChat(+id);
   }
+
+  @ApiTags('chats')
+  @UseGuards(RolesGuard)
+  @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  create(@Body() creatChatDto: CreateChatDto) {
+    return this.chatsService.create(creatChatDto);
+  }
 }

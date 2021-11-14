@@ -6,9 +6,6 @@ export class CreateChatDto {
   userId: string;
 
   @ApiProperty()
-  activityId: string;
-
-  @ApiProperty()
   message: string;
 
   @ApiProperty()
