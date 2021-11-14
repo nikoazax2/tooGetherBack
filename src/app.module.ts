@@ -9,6 +9,7 @@ import { RoleModule } from './roles/role.module';
 import { UsersModule } from './users/users.module';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { ChatsModule } from './chats/chat.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
     AuthModule,
     UsersModule,
     ActivitiesModule,
+    ChatsModule,
     MailerModule.forRoot({
       transport: 'smtps://user@domain.com:pass@smtp.domain.com',
       defaults: {
