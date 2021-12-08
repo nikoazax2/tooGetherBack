@@ -25,7 +25,7 @@ export class ActivitiesService {
 
   async findMap() {
     return await this.activities.find({
-      select: ['id', 'coordlieux'],
+      select: ['id', 'coordlieux', 'emoji'],
       relations: ['users'],
     });
   }

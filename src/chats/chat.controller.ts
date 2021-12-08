@@ -32,7 +32,7 @@ export class ChatsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  create(@Body() creatChatDto: CreateChatDto) {
-    return this.chatsService.create(creatChatDto);
+  create(@Body() creatChatDto: CreateChatDto, @Param('userId') userId: string) {
+    return this.chatsService.create(creatChatDto, +userId);
   }
 }

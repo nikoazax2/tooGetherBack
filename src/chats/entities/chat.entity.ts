@@ -14,16 +14,13 @@ import { Activity } from 'src/activities/entities/activity.entity';
 
 @Entity()
 export class Chat extends CustomBaseEntity {
-  @ManyToMany(() => User)
-  @JoinTable()
-  users: User[];
+  @ManyToOne(() => User, { nullable: false })
+  @JoinColumn({ name: 'userId' })
+  userId: User;
 
   @ManyToOne(() => Activity, { nullable: false })
   @JoinColumn({ name: 'activityId' })
   activityId: Activity;
-
-  @Column()
-  userId: string;
 
   @Column()
   message: string;

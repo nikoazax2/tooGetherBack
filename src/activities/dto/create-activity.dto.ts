@@ -22,4 +22,7 @@ export class CreateActivityDto {
 
   @ApiProperty()
   emoji: string;
+
+  @ApiProperty()
+  nbMax: string;
 }

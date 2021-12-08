@@ -39,4 +39,7 @@ export class Activity extends CustomBaseEntity {
 
   @Column()
   emoji: string;
+
+  @Column()
+  nbMax: string;
 }
