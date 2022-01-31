@@ -39,6 +39,25 @@ export class ChatsService {
     return retour;
   }
 
+  async findListChat(id: number) {
+    const chats = await this.chats
+      .createQueryBuilder('chat')
+      .leftJoinAndSelect('chat.userId', 'user')
+      .leftJoinAndSelect('chat.activityId', 'activity')
+      .distinctOn(['activity.id'])
+      .orderBy('chat.date', 'ASC')
+      .andWhere('user.id = ' + id)
+      .limit(1)
+      .execute();
+    /* .createQueryBuilder('activity')
+      .distinctOn(['activity.activityId'])
+      .innerJoin(User, 'user', 'user.id = activity.userId')
+      .andWhere('user.id = ' + id)
+      .execute(); */
+
+    return chats;
+  }
+
   async create(createChatDto: CreateChatDto, userId: number) {
     return await this.chats.save(createChatDto);
   }

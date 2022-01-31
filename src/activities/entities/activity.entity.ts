@@ -12,7 +12,9 @@ import { CustomBaseEntity } from '../../custom-base-entity';
 
 @Entity()
 export class Activity extends CustomBaseEntity {
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   users: User[];
 

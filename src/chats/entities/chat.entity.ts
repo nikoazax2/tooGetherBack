@@ -18,7 +18,10 @@ export class Chat extends CustomBaseEntity {
   @JoinColumn({ name: 'userId' })
   userId: User;
 
-  @ManyToOne(() => Activity, { nullable: false })
+  @ManyToOne(() => Activity, {
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
   @JoinColumn({ name: 'activityId' })
   activityId: Activity;
 

@@ -28,6 +28,12 @@ export class ChatsController {
   }
 
   @ApiTags('chats')
+  @Get('/:idUser/chatList')
+  listChat(@Param('idUser') idUser: string) {
+    return this.chatsService.findListChat(+idUser);
+  }
+
+  @ApiTags('chats')
   @UseGuards(RolesGuard)
   @Post()
   @ApiBearerAuth()

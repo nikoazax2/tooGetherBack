@@ -20,7 +20,12 @@ export class ActivitiesService {
   }
 
   async findAll() {
-    return await this.activities.find();
+    const activities = await this.activities
+      .createQueryBuilder('activity')
+      .orderBy('activity.date', 'ASC')
+      .execute();
+
+    return activities;
   }
 
   async findMap() {

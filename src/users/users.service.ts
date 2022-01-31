@@ -2,14 +2,16 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { getManager, Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcrypt';
 import { UserRegisterPayload } from '../auth/payload/user-register.payload';
 import { Role } from '../roles/role.entity';
 import { RoleEnum } from '../roles/role.enum';
+import { from, Observable } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -43,6 +45,21 @@ export class UsersService {
       where: { id: id },
       relations: ['roles'],
     });
+  }
+  async getFriend(id: string) {
+    const entityManager = getManager();
+    const rawData = await entityManager.query(
+      `SELECT userId_2 from user_friends_user where userId_1 = "${id}"`,
+    );
+    return rawData;
+  }
+
+  async addFriend(idUser: string, idFriend: string) {
+    const entityManager = getManager();
+    const rawData = await entityManager.query(
+      `INSERT INTO user_friends_user VALUES (${idUser}, ${idFriend}) `,
+    );
+    return true;
   }
 
   async register(payload: UserRegisterPayload) {
@@ -83,5 +100,8 @@ export class UsersService {
       password: passHash,
       roles: [role],
     });
+  }
+  updateOne(id: number, user: User): Observable<any> {
+    return from(this.users.update(id, user));
   }
 }
