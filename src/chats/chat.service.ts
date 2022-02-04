@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { getManager, Like, Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { UpdateChatDto } from './dto/update-chat.dto';
@@ -15,7 +15,7 @@ export class ChatsService {
     @InjectRepository(User) private users: Repository<User>,
   ) {}
   async findOneChat(id: number) {
-    const chats = await this.chats
+    /*  const chats = await this.chats
       .createQueryBuilder('chat')
       .leftJoinAndSelect('chat.userId', 'user')
       .leftJoinAndSelect('chat.activityId', 'activity')
@@ -27,7 +27,18 @@ export class ChatsService {
         'user.surname',
       ])
       .andWhere('chat.activityId = ' + id)
-      .execute();
+      .execute(); */
+
+    const entityManager = getManager();
+    let chats = await entityManager.query(
+      `select ch.userId as userId,ch.message as chat_message,ch.date as chat_date,us.avatar as user_avatar,us.surname as user_surname 
+          FROM chat ch
+          LEFT join user us on ch.userId = us.id 
+          left join activity act on ch.activityId = act.id
+          where ch.activityId=${id}
+          order by chat_date desc limit 20`,
+    );
+    chats = chats.reverse();
 
     const activity = await this.activities
       .createQueryBuilder('activity')

@@ -46,12 +46,20 @@ export class UsersService {
       relations: ['roles'],
     });
   }
-  async getFriend(id: string) {
+  async isFriend(id: string) {
     const entityManager = getManager();
-    const rawData = await entityManager.query(
+    const friendsId = await entityManager.query(
       `SELECT userId_2 from user_friends_user where userId_1 = "${id}"`,
     );
-    return rawData;
+    return friendsId;
+  }
+
+  async getFriends(id: string) {
+    const entityManager = getManager();
+    const friends = await entityManager.query(
+      `select friend.id, friend.surname, friend.avatar, friend.profileImage from user demandeur left JOIN user_friends_user jointure on demandeur.id = jointure.userId_1 left join user friend on friend.id = jointure.userId_2 where demandeur.id = ${id}`,
+    );
+    return friends;
   }
 
   async addFriend(idUser: string, idFriend: string) {

@@ -63,6 +63,14 @@ export class UsersController {
   @ApiTags('users')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @Get('getFriends/:id')
+  getFriends(@Request() req, @Param('id') id: string) {
+    return this.usersService.getFriends(id);
+  }
+
+  @ApiTags('users')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get('activities')
   activities(@Request() req) {
     return this.activitiesService.findFromUser(req.user.id);
@@ -94,10 +102,10 @@ export class UsersController {
     @Param('idUserConnected') idUserConnected: string,
   ) {
     let profilUser = (await this.usersService.getById(id)).getJSON();
-    let friends = await this.usersService.getFriend(idUserConnected);
+    let friends = await this.usersService.isFriend(idUserConnected);
 
     let friend = false;
-    friends.forEach((lefriend) => { 
+    friends.forEach((lefriend) => {
       lefriend.userId_2 == id ? (friend = true) : '';
     });
 
