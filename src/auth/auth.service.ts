@@ -22,6 +22,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Email not found');
     }
+    console.log(user);
     if (bcrypt.compareSync(payload.password, user.password)) {
       return user;
     }

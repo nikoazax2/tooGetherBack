@@ -112,4 +112,12 @@ export class UsersService {
   updateOne(id: number, user: User): Observable<any> {
     return from(this.users.update(id, user));
   }
+
+  async addProfileImage(path: string, user: User) {
+    /*  const entityManager = getManager();
+    const rawData = await entityManager.query(
+      `INSERT INTO user_friends_user VALUES (${path}, ${path}) `,
+    ); */
+    return true;
+  }
 }

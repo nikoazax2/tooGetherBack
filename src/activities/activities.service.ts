@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { getManager, Like, Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Chat } from '../chats/entities/chat.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
@@ -139,19 +139,15 @@ export class ActivitiesService {
   }
 
   async findFromUser(userId: number) {
-    const lesactivity = await this.activities.find({
-      relations: ['users'],
-    });
-    var lesActivitesARenvoyer = [];
-    //return lesactivity;
-    lesactivity.forEach((activite) => {
-      activite.users.forEach((user) => {
-        if (user.id == userId) {
-          lesActivitesARenvoyer.push(activite);
-        }
-      });
-    });
-    return lesActivitesARenvoyer;
+    const entityManager = getManager();
+    const activity = await entityManager.query(
+      `SELECT activity.name,activity.date,activity.description,activity.lieux,activity.creatorId,activity.coordlieux,activity.emoji,activity.nbMax 
+      FROM activity join activity_users_user on activityId = activity.id 
+      join user on userId = user.id 
+      where userId='${userId}' 
+      order by activity.date`,
+    );
+    return activity;
   }
 
   async addUser(id: number, userId: number) {

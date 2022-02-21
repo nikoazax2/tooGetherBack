@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -23,6 +24,7 @@ import path = require('path');
 import { User } from './user.entity';
 import { request } from 'http';
 import { getManager } from 'typeorm';
+import { editFileName } from './utils/file-upload.utils';
 
 export const storage = {
   storage: diskStorage({
@@ -50,6 +52,20 @@ export class UsersController {
   @Get('profile')
   profile(@Request() req) {
     return { user: req.user };
+  }
+
+  @ApiTags('users')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('profileImage/:path')
+  profileImage(@Res() res, @Param('path') path: string) {
+    if (path != 'null') {
+      res.sendFile(path, {
+        root: './uploads/profileimages',
+      });
+    } else {
+      return null;
+    }
   }
 
   @ApiTags('users')
@@ -131,4 +147,21 @@ export class UsersController {
       user.getJSON(),
     );
   }
+
+  @ApiTags('users')
+  @Post('profileImage')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads/profileimages',
+        filename: editFileName,
+      }),
+    }),
+  )
+  async addAvatar(@Request() req, @UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    return file;
+  }
+
+ 
 }
