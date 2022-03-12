@@ -59,13 +59,29 @@ export class UsersService {
     const friends = await entityManager.query(
       `select friend.id, friend.surname, friend.avatar, friend.profileImage from user demandeur left JOIN user_friends_user jointure on demandeur.id = jointure.userId_1 left join user friend on friend.id = jointure.userId_2 where demandeur.id = ${id}`,
     );
-    return friends;
+    console.log(JSON.stringify(friends));
+    if (
+      JSON.stringify(friends) ==
+      '[{"id":null,"surname":null,"avatar":null,"profileImage":null}]'
+    ) {
+      return [];
+    } else {
+      return friends;
+    }
   }
 
   async addFriend(idUser: string, idFriend: string) {
     const entityManager = getManager();
     const rawData = await entityManager.query(
       `INSERT INTO user_friends_user VALUES (${idUser}, ${idFriend}) `,
+    );
+    return true;
+  }
+
+  async suppFriend(idUser: string, idFriend: string) {
+    const entityManager = getManager();
+    const rawData = await entityManager.query(
+      `DELETE FROM user_friends_user WHERE user_friends_user.userId_1 = ${idUser} AND user_friends_user.userId_2 = ${idFriend}`,
     );
     return true;
   }

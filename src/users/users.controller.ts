@@ -55,8 +55,6 @@ export class UsersController {
   }
 
   @ApiTags('users')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @Get('profileImage/:path')
   profileImage(@Res() res, @Param('path') path: string) {
     if (path != 'null') {
@@ -74,6 +72,13 @@ export class UsersController {
   @Post('addFriend')
   addFriend(@Request() req) {
     return this.usersService.addFriend(req.body.idUser, req.body.idFriend);
+  }
+  @ApiTags('users')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('suppFriend')
+  suppFriend(@Request() req) {
+    return this.usersService.suppFriend(req.body.idUser, req.body.idFriend);
   }
 
   @ApiTags('users')
@@ -159,9 +164,6 @@ export class UsersController {
     }),
   )
   async addAvatar(@Request() req, @UploadedFile() file: Express.Multer.File) {
-    console.log(file);
     return file;
   }
-
- 
 }

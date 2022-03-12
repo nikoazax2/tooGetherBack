@@ -8,7 +8,6 @@ export const imageFileFilter = (req, file, callback) => {
 };
 
 export const editFileName = (req, file, callback) => {
-  console.log(req);
   const date = new Date();
   const dateFormat = `${date.getSeconds()}_${date.getMinutes()}_${date.getHours()}_${date.getDay()}_${date.getMonth()}_${date.getFullYear()}`;
   const name = file.originalname.split('.')[0];

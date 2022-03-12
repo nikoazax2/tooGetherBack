@@ -120,28 +120,36 @@ export class ActivitiesService {
   }
 
   async findFromPaticipant(UserIdPaticipant: number) {
-    const lesactivity = await this.activities.find({
-      relations: ['users'],
-    });
-    var lesActivitesARenvoyer = [];
-    //return lesactivity;
-    lesactivity.forEach((activite) => {
-      activite.users.forEach((user) => {
-        if (
-          user.id == UserIdPaticipant &&
-          activite.creatorId != UserIdPaticipant.toString()
-        ) {
-          lesActivitesARenvoyer.push(activite);
-        }
-      });
-    });
-    return lesActivitesARenvoyer;
+    const entityManager = getManager();
+
+    const activitys = await entityManager.query(
+      `SELECT act.id as act_id,act.name,act.description,act.date,act.lieux,act.creatorId,act.coordlieux,act.emoji,act.nbMax,usr.id as usr_id,usr.email,usr.surname,usr.avatar,usr.profileImage from activity act 
+      JOIN activity_users_user act_usr on act.id = act_usr.activityId
+      JOIN user usr on usr.id = act_usr.userId
+      where usr.id = '${UserIdPaticipant}'
+      ORDER by act.date desc`,
+    );
+    for (let index = 0; index < activitys.length; index++) {
+      let users = await entityManager.query(
+        `select usr.id,usr.avatar,usr.profileImage,usr.surname from user usr
+        JOIN activity_users_user act_usr on usr.id = act_usr.userId
+        JOIN activity act on act.id = act_usr.activityId
+        where act.id='${activitys[index].act_id}'`,
+      );
+      activitys[index].users = users;
+      console.log('index:' + index);
+      console.log('lenght: ' + activitys.length);
+      if (index == activitys.length - 1) {
+        return activitys;
+      }
+    }
+    console.log(activitys);
   }
 
   async findFromUser(userId: number) {
     const entityManager = getManager();
     const activity = await entityManager.query(
-      `SELECT activity.name,activity.date,activity.description,activity.lieux,activity.creatorId,activity.coordlieux,activity.emoji,activity.nbMax 
+      `SELECT activity.id,activity.name,activity.date,activity.description,activity.lieux,activity.creatorId,activity.coordlieux,activity.emoji,activity.nbMax 
       FROM activity join activity_users_user on activityId = activity.id 
       join user on userId = user.id 
       where userId='${userId}' 

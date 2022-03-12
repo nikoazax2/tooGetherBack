@@ -42,7 +42,7 @@ export class ChatsService {
 
     const activity = await this.activities
       .createQueryBuilder('activity')
-      .select(['activity.name', 'activity.emoji'])
+      .select(['activity.id, activity.name', 'activity.emoji'])
       .andWhere('activity.id = ' + id)
       .execute();
 
