@@ -28,6 +28,12 @@ export class User extends CustomBaseEntity {
   @Column()
   surname: string;
 
+  @Column()
+  interests: string;
+
+  @Column()
+  bio: string;
+
   @Column({ nullable: true, length: 1000 })
   avatar: string;
 

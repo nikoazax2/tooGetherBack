@@ -12,6 +12,7 @@ import { UserRegisterPayload } from '../auth/payload/user-register.payload';
 import { Role } from '../roles/role.entity';
 import { RoleEnum } from '../roles/role.enum';
 import { from, Observable } from 'rxjs';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -68,6 +69,10 @@ export class UsersService {
     } else {
       return friends;
     }
+  }
+
+  async update(id: number, UpdateUserDto: UpdateUserDto) {
+    await this.users.update(id, UpdateUserDto);
   }
 
   async addFriend(idUser: string, idFriend: string) {

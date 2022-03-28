@@ -9,6 +9,8 @@ import {
   UseInterceptors,
   UploadedFile,
   Res,
+  Body,
+  Patch,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -25,6 +27,7 @@ import { User } from './user.entity';
 import { request } from 'http';
 import { getManager } from 'typeorm';
 import { editFileName } from './utils/file-upload.utils';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 export const storage = {
   storage: diskStorage({
@@ -52,6 +55,12 @@ export class UsersController {
   @Get('profile')
   profile(@Request() req) {
     return { user: req.user };
+  }
+
+  @ApiTags('users')
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() UpdateUserDto: UpdateUserDto) {
+    return this.usersService.update(+id, UpdateUserDto);
   }
 
   @ApiTags('users')
