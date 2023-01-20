@@ -29,10 +29,33 @@ export class ActivitiesService {
   }
 
   async findMap() {
-    return await this.activities.find({
-      select: ['id', 'coordlieux', 'emoji'],
-      relations: ['users'],
-    });
+    const entityManager = getManager();
+    const lieux = await entityManager.query(
+      `SELECT
+      activity.id as 'id',
+      activity.coordlieux as 'coordlieux',
+      activity.emoji as 'emoji',
+      (
+         SELECT
+             JSON_ARRAYAGG(
+                 JSON_OBJECT(
+                     'id', user.id,
+                     'email', user.email,
+                     'avatar', user.avatar,
+                     'profileImage', user.profileImage,
+                     'username', user.surname
+                 )
+             )
+         FROM activity_users_user
+         LEFT JOIN user ON activity_users_user.userId = user.id
+         WHERE activity_users_user.activityId = activity.id
+         ) as users
+        FROM activity 
+        ORDER BY activity.date DESC
+        LIMIT 50`,
+    ); 
+
+    return lieux;
   }
 
   async findOne(id: number) {
@@ -53,63 +76,59 @@ export class ActivitiesService {
   }
 
   async getAllWParams(name: string, lieux: string, date: string) {
-    if (name == 'null' && lieux == 'null' && date == 'null') {
-      return await this.activities.find({ relations: ['users'] });
-    } else if (name != 'null' && lieux != 'null' && date == 'null') {
-      return await this.activities.find({
-        relations: ['users'],
-        where: {
-          name: Like('%' + name + '%'),
-          lieux: Like('%' + lieux + '%'),
-        },
-      });
-    } else if (name != 'null' && lieux == 'null' && date != 'null') {
-      return await this.activities.find({
-        relations: ['users'],
-        where: {
-          name: Like('%' + name + '%'),
-          date: Like('%' + date + '%'),
-        },
-      });
-    } else if (name == 'null' && lieux != 'null' && date != 'null') {
-      return await this.activities.find({
-        relations: ['users'],
-        where: {
-          lieux: Like('%' + lieux + '%'),
-          date: Like('%' + date + '%'),
-        },
-      });
-    } else if (name == 'null' && lieux == 'null' && date != 'null') {
-      return await this.activities.find({
-        relations: ['users'],
-        where: {
-          date: Like('%' + date + '%'),
-        },
-      });
-    } else if (name == 'null' && lieux != 'null' && date == 'null') {
-      return await this.activities.find({
-        relations: ['users'],
-        where: {
-          lieux: Like('%' + lieux + '%'),
-        },
-      });
-    } else if (name != 'null' && lieux == 'null' && date == 'null') {
-      return await this.activities.find({
-        relations: ['users'],
-        where: {
-          name: Like('%' + name + '%'),
-        },
-      });
-    } else if (name != 'null' && lieux != 'null' && date != 'null') {
-      return await this.activities.find({
-        relations: ['users'],
-        where: {
-          name: Like('%' + name + '%'),
-          lieux: Like('%' + lieux + '%'),
-          date: Like('%' + date + '%'),
-        },
-      });
-    }
+    const entityManager = getManager();
+    name = 'null' ? (name = null) : '';
+    lieux = 'null' ? (lieux = null) : '';
+    date = 'null' ? (date = null) : '';
+
+    let nameSQL = name ? `activity.name like '%${name}%'` : '';
+    let lieuxSQL = lieux ? `activity.lieux like '%${lieux}%'` : '';
+    let dateSQL = date ? `activity.date = '${date}'` : '';
+
+    let where = '';
+    if (name && lieux && date) {
+      where = `where ${nameSQL} and ${lieuxSQL} and ${dateSQL}`;
+    } else if (name && lieux) {
+      where = `where ${lieuxSQL} and ${nameSQL}`;
+    } else if (name && date) {
+      where = `where ${dateSQL} and ${nameSQL}`;
+    } else if (date && lieux) {
+      where = `where ${lieuxSQL} and ${dateSQL}`;
+    } else if (nameSQL || lieuxSQL || dateSQL) {
+      where = `where ${nameSQL} ${lieuxSQL} ${dateSQL}`;
+    } 
+    const activitys = await entityManager.query(
+      `SELECT
+      activity.id as 'id',
+      activity.name as 'name',
+      activity.description as 'description',
+      activity.date as 'date',
+      activity.lieux as 'lieux',
+      activity.creatorId as 'creatorId',
+      activity.coordlieux as 'coordlieux',
+      activity.emoji as 'emoji',
+      activity.nbMax as 'nbMax',
+      (
+         SELECT
+             JSON_ARRAYAGG(
+                 JSON_OBJECT(
+                        'usr_id', user.id,
+                     'email', user.email,
+                     'avatar', user.avatar,
+                     'profileImage', user.profileImage,
+                     'username', user.surname
+                 )
+             )
+         FROM activity_users_user
+         LEFT JOIN user ON activity_users_user.userId = user.id
+         WHERE activity_users_user.activityId = activity.id
+         ) as users
+        FROM activity
+        ${where}
+        ORDER BY activity.date DESC
+        LIMIT 10`,
+    ); 
+    return activitys;
   }
 
   async findFromCreator(userId: string) {

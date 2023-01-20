@@ -10,20 +10,12 @@ import { UsersModule } from './users/users.module';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ChatsModule } from './chats/chat.module';
+import * as connectionOptions from './ormconfig';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: process.env.DB_TYPE as any,
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT),
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: process.env.APP_ENV === 'dev',
-    }),
+    TypeOrmModule.forRoot(connectionOptions),
     RoleModule,
     AuthModule,
     UsersModule,
