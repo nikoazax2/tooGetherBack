@@ -77,13 +77,13 @@ export class ActivitiesService {
 
   async getAllWParams(name: string, lieux: string, date: string) {
     const entityManager = getManager();
-    name = 'null' ? (name = null) : '';
-    lieux = 'null' ? (lieux = null) : '';
-    date = 'null' ? (date = null) : '';
+    name == 'null' ? (name = null) : '';
+    lieux == 'null' ? (lieux = null) : '';
+    date == 'null' ? (date = null) : '';
 
     let nameSQL = name ? `activity.name like '%${name}%'` : '';
     let lieuxSQL = lieux ? `activity.lieux like '%${lieux}%'` : '';
-    let dateSQL = date ? `activity.date = '${date}'` : '';
+    let dateSQL = date ? `activity.date like '%${date}%'` : '';
 
     let where = '';
     if (name && lieux && date) {
@@ -96,7 +96,8 @@ export class ActivitiesService {
       where = `where ${lieuxSQL} and ${dateSQL}`;
     } else if (nameSQL || lieuxSQL || dateSQL) {
       where = `where ${nameSQL} ${lieuxSQL} ${dateSQL}`;
-    } 
+    }  
+    
     const activitys = await entityManager.query(
       `SELECT
       activity.id as 'id',
