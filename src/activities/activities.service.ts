@@ -87,16 +87,18 @@ export class ActivitiesService {
 
     let where = '';
     if (name && lieux && date) {
-      where = `where ${nameSQL} and ${lieuxSQL} and ${dateSQL}`;
+      where = `where ${nameSQL} and ${lieuxSQL} and ${dateSQL}  and activity.date > NOW()`;
     } else if (name && lieux) {
-      where = `where ${lieuxSQL} and ${nameSQL}`;
+      where = `where ${lieuxSQL} and ${nameSQL}  and activity.date > NOW()`;
     } else if (name && date) {
-      where = `where ${dateSQL} and ${nameSQL}`;
+      where = `where ${dateSQL} and ${nameSQL}  and activity.date > NOW()`;
     } else if (date && lieux) {
-      where = `where ${lieuxSQL} and ${dateSQL}`;
+      where = `where ${lieuxSQL} and ${dateSQL}  and activity.date > NOW()`;
     } else if (nameSQL || lieuxSQL || dateSQL) {
-      where = `where ${nameSQL} ${lieuxSQL} ${dateSQL}`;
-    }  
+      where = `where ${nameSQL} ${lieuxSQL} ${dateSQL} and activity.date > NOW()`;
+    }  else {
+        where = 'WHERE activity.date > NOW()'
+    }
     
     const activitys = await entityManager.query(
       `SELECT
