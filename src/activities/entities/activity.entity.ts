@@ -25,6 +25,9 @@ export class Activity extends CustomBaseEntity {
   id: number;
 
   @Column()
+  uuid: string;
+
+  @Column()
   name: string;
 
   @Column()

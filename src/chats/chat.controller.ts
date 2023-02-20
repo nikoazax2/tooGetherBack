@@ -22,9 +22,9 @@ import { UpdateChatDto } from './dto/update-chat.dto';
 export class ChatsController {
   constructor(private readonly chatsService: ChatsService) {}
   @ApiTags('chats')
-  @Get('/:id/chat')
-  activityCreator(@Param('id') id: string) {
-    return this.chatsService.findOneChat(+id);
+  @Get('/:uuid/chat')
+  activityCreator(@Param('uuid') uuid: string) {
+    return this.chatsService.findOneChat(uuid);
   }
 
   @ApiTags('chats')

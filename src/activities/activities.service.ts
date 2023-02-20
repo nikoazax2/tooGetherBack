@@ -6,6 +6,7 @@ import { Chat } from '../chats/entities/chat.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
 import { Activity } from './entities/activity.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class ActivitiesService {
@@ -16,6 +17,8 @@ export class ActivitiesService {
   ) {}
 
   async create(createActivityDto: CreateActivityDto) {
+      createActivityDto.uuid = uuidv4().replace(/-/g, ''); 
+      console.log(createActivityDto);
     return await this.activities.save(createActivityDto);
   }
 
@@ -171,7 +174,7 @@ export class ActivitiesService {
   async findFromUser(userId: number) {
     const entityManager = getManager();
     const activity = await entityManager.query(
-      `SELECT activity.id,activity.name,activity.date,activity.description,activity.lieux,activity.creatorId,activity.coordlieux,activity.emoji,activity.nbMax 
+      `SELECT activity.id,activity.uuid,activity.name,activity.date,activity.description,activity.lieux,activity.creatorId,activity.coordlieux,activity.emoji,activity.nbMax 
       FROM activity join activity_users_user on activityId = activity.id 
       join user on userId = user.id 
       where userId='${userId}' 

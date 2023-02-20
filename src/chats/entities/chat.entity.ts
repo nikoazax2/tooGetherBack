@@ -27,6 +27,9 @@ export class Chat extends CustomBaseEntity {
 
   @Column()
   message: string;
+  
+  @Column()
+  uuid: string;
 
   @Column()
   date: string;

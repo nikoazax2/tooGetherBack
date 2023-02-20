@@ -29,6 +29,9 @@ export class User extends CustomBaseEntity {
   surname: string;
 
   @Column()
+  uuid: string;
+
+  @Column()
   interests: string;
 
   @Column()

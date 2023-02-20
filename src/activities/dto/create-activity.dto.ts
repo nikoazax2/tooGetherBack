@@ -2,27 +2,30 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from 'src/users/user.entity';
 
 export class CreateActivityDto {
-  @ApiProperty()
-  creatorId: string;
+    @ApiProperty()
+    uuid: string;
 
-  @ApiProperty()
-  name: string;
+    @ApiProperty()
+    creatorId: string;
 
-  @ApiProperty()
-  lieux: string;
+    @ApiProperty()
+    name: string;
 
-  @ApiProperty()
-  coordlieux: string;
+    @ApiProperty()
+    lieux: string;
 
-  @ApiProperty()
-  date: string;
+    @ApiProperty()
+    coordlieux: string;
 
-  @ApiProperty()
-  description: string;
+    @ApiProperty()
+    date: string;
 
-  @ApiProperty()
-  emoji: string;
+    @ApiProperty()
+    description: string;
 
-  @ApiProperty()
-  nbMax: string;
+    @ApiProperty()
+    emoji: string;
+
+    @ApiProperty()
+    nbMax: string;
 }

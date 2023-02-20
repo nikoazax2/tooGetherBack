@@ -11,5 +11,8 @@ export class UserRegisterPayload {
   password: string;
 
   @ApiProperty()
+  uuid: string;
+
+  @ApiProperty()
   avatar: string;
 }

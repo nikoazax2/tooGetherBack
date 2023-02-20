@@ -13,6 +13,7 @@ import { Role } from '../roles/role.entity';
 import { RoleEnum } from '../roles/role.enum';
 import { from, Observable } from 'rxjs';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UsersService {
@@ -92,6 +93,7 @@ export class UsersService {
   }
 
   async register(payload: UserRegisterPayload) {
+    payload.uuid = uuidv4().replace(/-/g, ''); 
     if (
       payload.email === '' ||
       payload.surname === '' ||
@@ -130,6 +132,7 @@ export class UsersService {
       roles: [role],
     });
   }
+
   updateOne(id: number, user: User): Observable<any> {
     return from(this.users.update(id, user));
   }

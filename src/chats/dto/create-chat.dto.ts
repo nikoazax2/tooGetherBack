@@ -9,4 +9,7 @@ export class CreateChatDto {
 
   @ApiProperty()
   date: string;
+
+  @ApiProperty()
+  uuid: string;
 }
