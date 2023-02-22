@@ -64,6 +64,12 @@ export class UsersController {
   }
 
   @ApiTags('users')
+  @Get('checkMail/:mail')
+  checkMail(@Param('mail') mail: string) {
+    return this.usersService.checkMail(mail);
+  }
+
+  @ApiTags('users')
   @Get('profileImage/:path')
   profileImage(@Res() res, @Param('path') path: string) {
     if (path != 'null') {

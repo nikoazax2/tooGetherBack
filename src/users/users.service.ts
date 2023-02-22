@@ -84,6 +84,14 @@ export class UsersService {
     return true;
   }
 
+  async checkMail(mail: string) {
+    const entityManager = getManager();
+    const rawData = await entityManager.query(
+      `SELECT count(id) as count from user where email='${mail}'`,
+    );
+    return rawData[0].count==0 ? true: false;
+  }
+
   async suppFriend(idUser: string, idFriend: string) {
     const entityManager = getManager();
     const rawData = await entityManager.query(
