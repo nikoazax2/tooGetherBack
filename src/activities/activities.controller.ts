@@ -68,13 +68,13 @@ export class ActivitiesController {
   @ApiTags('activities')
   @Get('/:id/detail')
   activityDetail(@Param('id') id: string) {
-    return this.activitiesService.findOne(+id);
+    return this.activitiesService.findOne(id);
   }
 
   @ApiTags('activities')
-  @Get('/map')
-  activityMap() {
-    return this.activitiesService.findMap();
+  @Get('/map/:coords')
+  activityMap(@Param('coords') coords: string) {
+    return this.activitiesService.findMap(coords);
   }
 
   @ApiBearerAuth()
@@ -83,7 +83,7 @@ export class ActivitiesController {
   @UseGuards(RolesGuard)
   @Put(':id/user/:userId')
   addUser(@Param('id') id: string, @Param('userId') userId: string) {
-    return this.activitiesService.addUser(+id, +userId);
+    return this.activitiesService.addUser(id, userId);
   }
 
   @ApiTags('activities')

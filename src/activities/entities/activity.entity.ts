@@ -37,6 +37,12 @@ export class Activity extends CustomBaseEntity {
   coordlieux: string;
 
   @Column()
+  lat: string;
+
+  @Column()
+  lng: string;
+
+  @Column()
   date: string;
 
   @Column()

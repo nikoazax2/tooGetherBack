@@ -18,6 +18,12 @@ export class CreateActivityDto {
     coordlieux: string;
 
     @ApiProperty()
+    lat: string;
+  
+    @ApiProperty()
+    lng: string;
+
+    @ApiProperty()
     date: string;
 
     @ApiProperty()

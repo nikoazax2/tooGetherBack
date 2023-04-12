@@ -60,8 +60,7 @@ export class UsersService {
     const entityManager = getManager();
     const friends = await entityManager.query(
       `select friend.id, friend.surname, friend.avatar, friend.profileImage from user demandeur left JOIN user_friends_user jointure on demandeur.id = jointure.userId_1 left join user friend on friend.id = jointure.userId_2 where demandeur.id = ${id}`,
-    );
-    console.log(JSON.stringify(friends));
+    ); 
     if (
       JSON.stringify(friends) ==
       '[{"id":null,"surname":null,"avatar":null,"profileImage":null}]'

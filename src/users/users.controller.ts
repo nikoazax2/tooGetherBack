@@ -117,7 +117,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Post('activities/:id')
   addActivity(@Request() req, @Param('id') id: string) {
-    return this.activitiesService.addUser(+id, req.user.id);
+    return this.activitiesService.addUser(id, req.user.id);
   }
 
   @ApiTags('users')
