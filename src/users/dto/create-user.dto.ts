@@ -15,9 +15,6 @@ export class CreateUserDto {
   bio: string;
 
   @ApiProperty()
-  uuid: string;
-
-  @ApiProperty()
   avatar: string;
 
   @ApiProperty()

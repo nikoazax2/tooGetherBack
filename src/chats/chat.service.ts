@@ -10,54 +10,50 @@ import { uuid } from 'uuid';
 
 @Injectable()
 export class ChatsService {
-  constructor(
-    @InjectRepository(Chat) private chats: Repository<Chat>,
-    @InjectRepository(Activity) private activities: Repository<Activity>,
-    @InjectRepository(User) private users: Repository<User>,
-  ) {}
-  async findOneChat(uuid: string) {
-    const entityManager = getManager()
-    
-    let chats = await entityManager.query(
-      `select ch.userId as userId,ch.message as chat_message,ch.date as chat_date,us.avatar as user_avatar,us.surname as user_surname, ch.uuid
+    constructor(
+        @InjectRepository(Chat) private chats: Repository<Chat>,
+        @InjectRepository(Activity) private activities: Repository<Activity>,
+        @InjectRepository(User) private users: Repository<User>,
+    ) { }
+    async findOneChat(uuid: string, page: number) {
+        const entityManager = getManager()
+
+        let chats = await entityManager.query(
+            `select ch.userUuid as userUuid,ch.message as chat_message,ch.date as chat_date,us.avatar as user_avatar,
+        us.surname as user_surname,us.profileImage as user_profileImage,us.avatar as user_avatar, ch.uuid
           FROM chat ch
-          LEFT join user us on ch.userId = us.id 
+          LEFT join user us on ch.userUuid = us.uuid
           left join activity act on ch.uuid = act.uuid
-          where ch.uuid = "`+uuid+`"
-          order by chat_date desc limit 20`)
-          
-    chats = chats.reverse()
+          where ch.activityUuid = "`+ uuid + `"
+          order by chat_date desc limit 20 offset ${page * 20 - 20}`)
 
-    const activity = await this.activities
-      .createQueryBuilder('activity')
-      .select(['activity.id, activity.name', 'activity.emoji'])
-      .andWhere('activity.uuid = "' + uuid+'"')
-      .execute()
+        chats = chats.reverse()
 
-    const retour = { chats: chats, activity: activity }
-    return retour
-  }
+        const activity = await this.activities
+            .createQueryBuilder('activity')
+            .select(['activity.uuid, activity.name', 'activity.emoji'])
+            .andWhere('activity.uuid = "' + uuid + '"')
+            .execute()
 
-  async findListChat(id: number) {
-    const chats = await this.chats
-      .createQueryBuilder('chat')
-      .leftJoinAndSelect('chat.userId', 'user')
-      .leftJoinAndSelect('chat.activityId', 'activity')
-      .distinctOn(['activity.id'])
-      .orderBy('chat.date', 'ASC')
-      .andWhere('user.id = ' + id)
-      .limit(1)
-      .execute();
-    /* .createQueryBuilder('activity')
-      .distinctOn(['activity.activityId'])
-      .innerJoin(User, 'user', 'user.id = activity.userId')
-      .andWhere('user.id = ' + id)
-      .execute(); */
+        const retour = { chats: chats, activity: activity }
+        return retour
+    }
 
-    return chats;
-  }
+    async findListChat(id: string) {
+        const chats = await this.chats
+            .createQueryBuilder('chat')
+            .leftJoinAndSelect('chat.userUuid', 'user')
+            .leftJoinAndSelect('chat.activityUuid', 'activity')
+            .distinctOn(['activity.uuid'])
+            .orderBy('chat.date', 'ASC')
+            .andWhere('user.uuid = "' + id + '"')
+            .limit(1)
+            .execute();
 
-  async create(createChatDto: CreateChatDto, userId: number) {
-    return await this.chats.save(createChatDto);
-  }
+        return chats;
+    }
+
+    async create(createChatDto: CreateChatDto, userUuid: string) {
+        return await this.chats.save(createChatDto);
+    }
 }

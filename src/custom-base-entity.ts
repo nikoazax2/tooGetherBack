@@ -1,19 +1,19 @@
 import {
-  Entity,
-  BaseEntity,
-  CreateDateColumn,
-  UpdateDateColumn,
-  PrimaryGeneratedColumn,
+    Entity,
+    BaseEntity,
+    CreateDateColumn,
+    UpdateDateColumn,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
 export class CustomBaseEntity extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+    @PrimaryGeneratedColumn()
+    uuid: string;
 
-  @CreateDateColumn()
-  creation: Date;
+    @CreateDateColumn()
+    creation: Date;
 
-  @UpdateDateColumn()
-  modification: Date;
+    @UpdateDateColumn()
+    modification: Date;
 }

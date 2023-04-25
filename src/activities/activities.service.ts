@@ -18,7 +18,6 @@ export class ActivitiesService {
     ) { }
 
     async create(createActivityDto: CreateActivityDto) {
-        createActivityDto.uuid = uuidv4().replace(/-/g, '');
         return await this.activities.save(createActivityDto);
     }
 
@@ -37,7 +36,7 @@ export class ActivitiesService {
         let lieux = null
         if (coords != null) {
             lieux = await entityManager.query(`SELECT
-            activity.id as 'id', 
+            activity.uuid as 'id', 
             activity.lat as 'lat',
             activity.lng as 'lng',
             activity.uuid as 'uuid',
@@ -53,7 +52,7 @@ export class ActivitiesService {
                 SELECT
                     JSON_ARRAYAGG(
                         JSON_OBJECT(
-                            'id', user.id,
+                            'uuid', user.uuid,
                             'email', user.email,
                             'avatar', user.avatar,
                             'profileImage', user.profileImage,
@@ -61,8 +60,8 @@ export class ActivitiesService {
                         )
                     )
                 FROM activity_users_user
-                LEFT JOIN user ON activity_users_user.userId = user.id
-                WHERE activity_users_user.activityId = activity.id
+                LEFT JOIN user ON activity_users_user.userUuid = user.uuid
+                WHERE activity_users_user.activityUuid = activity.uuid
                 ) as users
               FROM activity 
               WHERE ST_Contains(ST_GeomFromText('POLYGON((${coords["no"]["lng"]} ${coords["no"]["lat"]}, ${coords["ne"]["lng"]} ${coords["ne"]["lat"]}, ${coords["se"]["lng"]} ${coords["se"]["lat"]}, ${coords["so"]["lng"]} ${coords["so"]["lat"]}, ${coords["no"]["lng"]} ${coords["no"]["lat"]}))'),  ST_GeomFromText(CONCAT("POINT(", activity.lng, " ", activity.lat,")")))
@@ -71,7 +70,7 @@ export class ActivitiesService {
         } else {
             lieux = await entityManager.query(
                 `SELECT
-                activity.id as 'id', 
+                activity.uuid as 'uuid', 
                 activity.lat as 'lat',
                 activity.lng as 'lng',
                 activity.uuid as 'uuid',
@@ -87,7 +86,7 @@ export class ActivitiesService {
                      SELECT
                          JSON_ARRAYAGG(
                              JSON_OBJECT(
-                                'id', user.id,
+                                'uuid', user.uuid,
                                 'email', user.email,
                                 'avatar', user.avatar,
                                 'profileImage', user.profileImage,
@@ -95,8 +94,8 @@ export class ActivitiesService {
                              )
                          )
                      FROM activity_users_user
-                     LEFT JOIN user ON activity_users_user.userId = user.id
-                     WHERE activity_users_user.activityId = activity.id
+                     LEFT JOIN user ON activity_users_user.userUuid = user.uuid
+                     WHERE activity_users_user.activityUuid = activity.uuid
                      ) as users
                     FROM activity 
                     ORDER BY activity.date DESC
@@ -110,7 +109,7 @@ export class ActivitiesService {
     async findOne(id: string) {
         return await this.activities.findOne({
             select: [
-                'id',
+                'uuid',
                 'name',
                 'lieux',
                 'date',
@@ -164,7 +163,7 @@ export class ActivitiesService {
          SELECT
              JSON_ARRAYAGG(
                  JSON_OBJECT(
-                        'usr_id', user.id,
+                        'usr_id', user.uuid,
                      'email', user.email,
                      'avatar', user.avatar,
                      'profileImage', user.profileImage,
@@ -172,8 +171,8 @@ export class ActivitiesService {
                  )
              )
          FROM activity_users_user
-         LEFT JOIN user ON activity_users_user.userId = user.id
-         WHERE activity_users_user.activityId = activity.id
+         LEFT JOIN user ON activity_users_user.userUuid = user.uuid
+         WHERE activity_users_user.activityUuid = activity.uuid
          ) as users
         FROM activity
         ${where}
@@ -183,29 +182,29 @@ export class ActivitiesService {
         return activitys;
     }
 
-    async findFromCreator(userId: string) {
+    async findFromCreator(userUuid: string) {
         return await this.activities.find({
             relations: ['users'],
-            where: { creatorId: userId },
+            where: { creatorId: userUuid },
         });
     }
 
-    async findFromPaticipant(UserIdPaticipant: number) {
+    async findFromPaticipant(userUuidPaticipant: string) {
         const entityManager = getManager();
 
         const activitys = await entityManager.query(
-            `SELECT act.id as act_id,act.name,act.description,act.date,act.lieux,act.creatorId,act.coordlieux,act.emoji,act.nbMax,usr.id as usr_id,usr.email,usr.surname,usr.avatar,usr.profileImage from activity act 
-      JOIN activity_users_user act_usr on act.id = act_usr.activityId
-      JOIN user usr on usr.id = act_usr.userId
-      where usr.id = '${UserIdPaticipant}'
+            `SELECT act.uuid,act.name,act.description,act.date,act.lieux,act.creatorId,act.coordlieux,act.emoji,act.nbMax,usr.uuid as usr_id,usr.email,usr.surname,usr.avatar,usr.profileImage from activity act 
+      JOIN activity_users_user act_usr on act.uuid = act_usr.activityUuid
+      JOIN user usr on usr.uuid = act_usr.userUuid
+      where usr.uuid = '${userUuidPaticipant}'
       ORDER by act.date desc`,
         );
         for (let index = 0; index < activitys.length; index++) {
             let users = await entityManager.query(
-                `select usr.id,usr.avatar,usr.profileImage,usr.surname from user usr
-        JOIN activity_users_user act_usr on usr.id = act_usr.userId
-        JOIN activity act on act.id = act_usr.activityId
-        where act.id='${activitys[index].act_id}'`,
+                `select usr.uuid,usr.avatar,usr.profileImage,usr.surname from user usr
+        JOIN activity_users_user act_usr on usr.uuid = act_usr.userUuid
+        JOIN activity act on act.uuid = act_usr.activityUuid
+        where act.uuid='${activitys[index].act_id}'`,
             );
             activitys[index].users = users;
             if (index == activitys.length - 1) {
@@ -214,30 +213,30 @@ export class ActivitiesService {
         }
     }
 
-    async findFromUser(userId: number) {
+    async findFromUser(userUuid: string) {
         const entityManager = getManager();
         const activity = await entityManager.query(
-            `SELECT activity.id,activity.uuid,activity.name,activity.date,activity.description,activity.lieux,activity.creatorId,activity.coordlieux,activity.emoji,activity.nbMax 
-      FROM activity join activity_users_user on activityId = activity.id 
-      join user on userId = user.id 
-      where userId='${userId}' 
+            `SELECT activity.uuid,activity.uuid,activity.name,activity.date,activity.description,activity.lieux,activity.creatorId,activity.coordlieux,activity.emoji,activity.nbMax 
+      FROM activity join activity_users_user on activityUuid = activity.uuid 
+      join user on userUuid = user.uuid 
+      where userUuid='${userUuid}' 
       order by activity.date`,
         );
         return activity;
     }
 
-    async addUser(id: string, userId: string) {
-        console.log(id);
+    async addUser(uuid: string, userUuid: string) {
+        console.log(uuid);
 
         let activity = await this.activities.findOne({
             relations: ['users'],
-            where: { uuid: id },
+            where: { uuid: uuid },
         });
         if (!activity) {
             throw new NotFoundException('Activity not found');
         }
         let user = await this.users.findOne({
-            where: { uuid: userId }
+            where: { uuid: userUuid }
         });
         if (!user) {
             throw new NotFoundException('User not found');
@@ -247,15 +246,15 @@ export class ActivitiesService {
         return true;
     }
 
-    async removeUser(id: number, userId: number) {
+    async removeUser(uuid: string, userUuid: string) {
         let activity = await this.activities.findOne({
             relations: ['users'],
-            where: { id: id },
+            where: { uuid: uuid },
         });
         if (!activity) {
             throw new NotFoundException('Activity not found');
         }
-        let user = await this.users.findOne(userId);
+        let user = await this.users.findOne(userUuid);
         if (!user) {
             throw new NotFoundException('User not found');
         }
@@ -265,11 +264,11 @@ export class ActivitiesService {
         return true;
     }
 
-    async update(id: number, updateActivitytDto: UpdateActivityDto) {
-        await this.activities.update(id, updateActivitytDto);
+    async update(uuid: string, updateActivitytDto: UpdateActivityDto) {
+        await this.activities.update(uuid, updateActivitytDto);
     }
 
-    async remove(id: number) {
-        await this.activities.delete(id);
+    async remove(uuid: string) {
+        await this.activities.delete(uuid);
     }
 }

@@ -4,12 +4,10 @@ import { User } from 'src/users/user.entity';
 import { JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm';
 
 export class CreateChatDto {
-  @ApiProperty()
-  message: string;
+    @ApiProperty()
+    message: string;
 
-  @ApiProperty()
-  date: string;
+    @ApiProperty()
+    date: string;
 
-  @ApiProperty()
-  uuid: string;
 }

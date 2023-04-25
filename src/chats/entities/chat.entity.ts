@@ -1,12 +1,12 @@
 import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
+    Column,
+    Entity,
+    JoinColumn,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../users/user.entity';
 import { CustomBaseEntity } from '../../custom-base-entity';
@@ -14,23 +14,25 @@ import { Activity } from 'src/activities/entities/activity.entity';
 
 @Entity()
 export class Chat extends CustomBaseEntity {
-  @ManyToOne(() => User, { nullable: false })
-  @JoinColumn({ name: 'userId' })
-  userId: User;
+    @PrimaryGeneratedColumn('uuid')
+    uuid: string;
+    
+    @ManyToOne(() => User, { nullable: false })
+    @JoinColumn({ name: 'userUuid' })
+    userUuid: User;
 
-  @ManyToOne(() => Activity, {
-    onDelete: 'CASCADE',
-    nullable: false,
-  })
-  @JoinColumn({ name: 'activityId' })
-  activityId: Activity;
 
-  @Column()
-  message: string;
-  
-  @Column()
-  uuid: string;
+    @ManyToOne(() => Activity, {
+        onDelete: 'CASCADE',
+        nullable: false,
+    })
+    @JoinColumn({ name: 'activityUuid' })
+    activityUuid: Activity;
 
-  @Column()
-  date: string;
+    @Column()
+    message: string;
+
+
+    @Column()
+    date: string;
 }

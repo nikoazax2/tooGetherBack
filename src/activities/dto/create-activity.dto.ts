@@ -3,9 +3,6 @@ import { User } from 'src/users/user.entity';
 
 export class CreateActivityDto {
     @ApiProperty()
-    uuid: string;
-
-    @ApiProperty()
     creatorId: string;
 
     @ApiProperty()

@@ -1,56 +1,54 @@
 import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
+    Column,
+    Entity,
+    JoinTable,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../users/user.entity';
 import { CustomBaseEntity } from '../../custom-base-entity';
 
 @Entity()
 export class Activity extends CustomBaseEntity {
-  @ManyToMany(() => User, {
-    onDelete: 'CASCADE',
-  })
-  @JoinTable()
-  users: User[];
+    @PrimaryGeneratedColumn('uuid')
+    uuid: string;
 
-  @Column()
-  creatorId: string;
+    @ManyToMany(() => User, {
+        onDelete: 'CASCADE',
+    })
+    @JoinTable()
+    users: User[];
 
-  @PrimaryGeneratedColumn()
-  id: number;
+    @Column()
+    creatorId: string;
 
-  @Column()
-  uuid: string;
 
-  @Column()
-  name: string;
+    @Column()
+    name: string;
 
-  @Column()
-  lieux: string;
+    @Column()
+    lieux: string;
 
-  @Column()
-  coordlieux: string;
+    @Column()
+    coordlieux: string;
 
-  @Column()
-  lat: string;
+    @Column()
+    lat: string;
 
-  @Column()
-  lng: string;
+    @Column()
+    lng: string;
 
-  @Column()
-  date: string;
+    @Column()
+    date: string;
 
-  @Column()
-  description: string;
+    @Column()
+    description: string;
 
-  @Column()
-  emoji: string;
+    @Column()
+    emoji: string;
 
-  @Column()
-  nbMax: string;
+    @Column()
+    nbMax: string;
 }

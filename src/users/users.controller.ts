@@ -1,16 +1,16 @@
 import {
-  Controller,
-  UseGuards,
-  Request,
-  Get,
-  Param,
-  Post,
-  Delete,
-  UseInterceptors,
-  UploadedFile,
-  Res,
-  Body,
-  Patch,
+    Controller,
+    UseGuards,
+    Request,
+    Get,
+    Param,
+    Post,
+    Delete,
+    UseInterceptors,
+    UploadedFile,
+    Res,
+    Body,
+    Patch,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -30,155 +30,163 @@ import { editFileName } from './utils/file-upload.utils';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 export const storage = {
-  storage: diskStorage({
-    destination: './uploads/profileimages',
-    filename: (req, file, cb) => {
-      const filename: string =
-        path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
-      const extension: string = path.parse(file.originalname).ext;
+    storage: diskStorage({
+        destination: './uploads/profileimages',
+        filename: (req, file, cb) => {
+            const filename: string =
+                path.parse(file.originalname).name.replace(/\s/g, '') + uuidv4();
+            const extension: string = path.parse(file.originalname).ext;
 
-      cb(null, `${filename}${extension}`);
-    },
-  }),
+            cb(null, `${filename}${extension}`);
+        },
+    }),
 };
 
 @Controller('users')
 export class UsersController {
-  constructor(
-    private usersService: UsersService,
-    private activitiesService: ActivitiesService,
-  ) {}
+    constructor(
+        private usersService: UsersService,
+        private activitiesService: ActivitiesService,
+    ) { }
 
-  @ApiTags('users')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  profile(@Request() req) {
-    return { user: req.user };
-  }
-
-  @ApiTags('users')
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() UpdateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, UpdateUserDto);
-  }
-
-  @ApiTags('users')
-  @Get('checkMail/:mail')
-  checkMail(@Param('mail') mail: string) {
-    return this.usersService.checkMail(mail);
-  }
-
-  @ApiTags('users')
-  @Get('profileImage/:path')
-  profileImage(@Res() res, @Param('path') path: string) {
-    if (path != 'null') {
-      res.sendFile(path, {
-        root: './uploads/profileimages',
-      });
-    } else {
-      return null;
+    @ApiTags('users')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('profile')
+    profile(@Request() req) { 
+        return { user: req.user };
     }
-  }
 
-  @ApiTags('users')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Post('addFriend')
-  addFriend(@Request() req) {
-    return this.usersService.addFriend(req.body.idUser, req.body.idFriend);
-  }
-  @ApiTags('users')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Post('suppFriend')
-  suppFriend(@Request() req) {
-    return this.usersService.suppFriend(req.body.idUser, req.body.idFriend);
-  }
+    @ApiTags('users')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('getprofile/:uuid')
+    getprofile(@Param('uuid') uuid: string) {
+        return this.usersService.getprofile(uuid);
+    }
 
-  @ApiTags('users')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get('getFriends/:id')
-  getFriends(@Request() req, @Param('id') id: string) {
-    return this.usersService.getFriends(id);
-  }
+    @ApiTags('users')
+    @Patch(':uuid')
+    update(@Param('uuid') uuid: string, @Body() UpdateUserDto: UpdateUserDto) {
+        return this.usersService.update(uuid, UpdateUserDto);
+    }
 
-  @ApiTags('users')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get('activities')
-  activities(@Request() req) {
-    return this.activitiesService.findFromUser(req.user.id);
-  }
+    @ApiTags('users')
+    @Get('checkMail/:mail')
+    checkMail(@Param('mail') mail: string) {
+        return this.usersService.checkMail(mail);
+    }
 
-  @ApiTags('users')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Post('activities/:id')
-  addActivity(@Request() req, @Param('id') id: string) {
-    return this.activitiesService.addUser(id, req.user.id);
-  }
+    @ApiTags('users')
+    @Get('profileImage/:path')
+    profileImage(@Res() res, @Param('path') path: string) {
+        if (path != 'null') {
+            res.sendFile(path, {
+                root: './uploads/profileimages',
+            });
+        } else {
+            return null;
+        }
+    }
 
-  @ApiTags('users')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Delete('activities/:id')
-  removeActivity(@Request() req, @Param('id') id: string) {
-    return this.activitiesService.removeUser(+id, req.user.id);
-  }
+    @ApiTags('users')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('addFriend')
+    addFriend(@Request() req) { 
+        return this.usersService.addFriend(req.body.idUser, req.body.idFriend);
+    }
+    @ApiTags('users')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('suppFriend')
+    suppFriend(@Request() req) {
+        return this.usersService.suppFriend(req.body.idUser, req.body.idFriend);
+    }
 
-  @ApiTags('admin')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Roles(RoleEnum.Admin)
-  @Get('profile/:id/:idUserConnected')
-  async getOne(
-    @Param('id') id: string,
-    @Param('idUserConnected') idUserConnected: string,
-  ) {
-    let profilUser = (await this.usersService.getById(id)).getJSON();
-    let friends = await this.usersService.isFriend(idUserConnected);
+    @ApiTags('users')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('getFriends/:uuid')
+    getFriends(@Request() req, @Param('uuid') uuid: string) {
+        return this.usersService.getFriends(uuid);
+    }
 
-    let friend = false;
-    friends.forEach((lefriend) => {
-      lefriend.userId_2 == id ? (friend = true) : '';
-    });
+    @ApiTags('users')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Get('activities')
+    activities(@Request() req) {
+        return this.activitiesService.findFromUser(req.user.id);
+    }
 
-    return { profilUser, friend };
-  }
+    @ApiTags('users')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Post('activities/:uuid')
+    addActivity(@Request() req, @Param('uuid') uuid: string) {
+        return this.activitiesService.addUser(uuid, req.user.uuid);
+    }
 
-  @ApiTags('admin')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Roles(RoleEnum.Admin)
-  @Get('list')
-  async list(@Param('email') email: string) {
-    return (await this.usersService.getAll(email)).map((user) =>
-      user.getJSON(),
-    );
-  }
+    @ApiTags('users')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Delete('activities/:uuid')
+    removeActivity(@Request() req, @Param('uuid') uuid: string) {
+        return this.activitiesService.removeUser(uuid, req.user.id);
+    }
 
-  @ApiTags('users')
-  @ApiBearerAuth()
-  @Get('testmailexist')
-  async textmailexist(@Param('mail') mail: string) {
-    return (await this.usersService.testmail(mail)).map((user) =>
-      user.getJSON(),
-    );
-  }
+    @ApiTags('admin')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Roles(RoleEnum.Admin)
+    @Get('profile/:id/:idUserConnected')
+    async getOne(
+        @Param('id') id: string,
+        @Param('idUserConnected') idUserConnected: string,
+    ) {
+        let profilUser = (await this.usersService.getById(id)).getJSON();
+        let friends = await this.usersService.isFriend(idUserConnected);
 
-  @ApiTags('users')
-  @Post('profileImage')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads/profileimages',
-        filename: editFileName,
-      }),
-    }),
-  )
-  async addAvatar(@Request() req, @UploadedFile() file: Express.Multer.File) {
-    return file;
-  }
+        let friend = false;
+        friends.forEach((lefriend) => {
+            lefriend.userUuid_2 == id ? (friend = true) : '';
+        });
+
+        return { profilUser, friend };
+    }
+
+    @ApiTags('admin')
+    @ApiBearerAuth()
+    @UseGuards(JwtAuthGuard)
+    @Roles(RoleEnum.Admin)
+    @Get('list')
+    async list(@Param('email') email: string) {
+        return (await this.usersService.getAll(email)).map((user) =>
+            user.getJSON(),
+        );
+    }
+
+    @ApiTags('users')
+    @ApiBearerAuth()
+    @Get('testmailexist')
+    async textmailexist(@Param('mail') mail: string) {
+        return (await this.usersService.testmail(mail)).map((user) =>
+            user.getJSON(),
+        );
+    }
+
+    @ApiTags('users')
+    @Post('profileImage')
+    @UseInterceptors(
+        FileInterceptor('file', {
+            storage: diskStorage({
+                destination: './uploads/profileimages',
+                filename: editFileName,
+            }),
+        }),
+    )
+    async addAvatar(@Request() req, @UploadedFile() file: Express.Multer.File) {
+        return file;
+    }
 }

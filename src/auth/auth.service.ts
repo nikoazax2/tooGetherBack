@@ -31,7 +31,7 @@ export class AuthService {
 
   async createToken(user: User) {
     return {
-      access_token: this.jwtService.sign({ id: user.id }, { expiresIn: '4h' }),
+      access_token: this.jwtService.sign({ id: user.uuid }, { expiresIn: '4h' }),
     };
   }
 }
