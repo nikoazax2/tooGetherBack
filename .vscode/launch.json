@@ -8,7 +8,7 @@
       "type": "pwa-chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",
-      "url": "http://dev-tgt.local:8080",
+      "url": "http://89.116.228.185:8080",
       "webRoot": "${workspaceFolder}"
     }
   ]
