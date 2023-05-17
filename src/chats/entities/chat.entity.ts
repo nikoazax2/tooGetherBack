@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { User } from '../../users/user.entity';
 import { CustomBaseEntity } from '../../custom-base-entity';
-import { Activity } from 'src/activities/entities/activity.entity';
+import { Activity } from 'src/activities/entities/activity.entity'; 
 
 @Entity()
 export class Chat extends CustomBaseEntity {
@@ -21,17 +21,16 @@ export class Chat extends CustomBaseEntity {
     @JoinColumn({ name: 'userUuid' })
     userUuid: User;
 
+    @ManyToOne(() => Activity)
 
-    @ManyToOne(() => Activity, {
-        onDelete: 'CASCADE',
-        nullable: false,
-    })
     @JoinColumn({ name: 'activityUuid' })
     activityUuid: Activity;
 
+    @Column({ name: 'userUuid2' })
+    userUuid2: string;
+
     @Column()
     message: string;
-
 
     @Column()
     date: string;

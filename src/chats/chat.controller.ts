@@ -25,7 +25,7 @@ export class ChatsController {
     @ApiTags('chats')
     @Post('/chat')
     activityCreator(@Request() req) {
-        return this.chatsService.findOneChat(req.body.uuid, req.body.page);
+        return this.chatsService.findOneChat(req.body.uuid, req.body.page, req.body.uuiduser, req.body.uuiduser2);
     }
 
     @ApiTags('chats')
@@ -39,7 +39,7 @@ export class ChatsController {
     @Post()
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
-    create(@Body() creatChatDto: CreateChatDto, @Param('userUuid') userUuid: string) {
-        return this.chatsService.create(creatChatDto, userUuid);
+    create(@Body() creatChatDto: CreateChatDto, @Param('userUuid') userUuid: string, @Param('userUuid2') userUuid2: string) {
+        return this.chatsService.create(creatChatDto, userUuid, userUuid2);
     }
 }

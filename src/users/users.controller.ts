@@ -61,7 +61,7 @@ export class UsersController {
     @ApiBearerAuth()
     @UseGuards(JwtAuthGuard)
     @Get('getprofile/:uuid')
-    getprofile(@Param('uuid') uuid: string) {
+    getprofile(@Param('uuid') uuid: string) { 
         return this.usersService.getprofile(uuid);
     }
 

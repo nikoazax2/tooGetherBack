@@ -31,7 +31,7 @@ export class UsersService {
     async getprofile(id) {
         const entityManager = getManager();
         const user = await entityManager.query(
-            `SELECT * from user where user.uuid = "${id}"`
+            `SELECT avatar,bio,creation,email,interests,profileImage,surname,uuid from user where user.uuid = "${id}"`
         )
         return user;
     }
