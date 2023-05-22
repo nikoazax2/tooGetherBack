@@ -4,10 +4,10 @@ const PROD_ENV = 'production'
  
 const connectionOptions: ConnectionOptions = {
     type: 'mysql',
-    host: 'localhost',
+    host: '89.116.228.185',
     port: 3306,
-    username: 'root',
-    password: '',
+    username: 'tg',
+    password: 'tg',
     database: 'nest',
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: process.env.APP_ENV === 'dev',
