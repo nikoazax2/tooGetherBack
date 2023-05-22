@@ -4,7 +4,7 @@ const PROD_ENV = 'production'
  
 const connectionOptions: ConnectionOptions = {
     type: 'mysql',
-    host: '89.116.228.185',
+    host: 'localhost',
     port: 3306,
     username: 'root',
     password: '',
